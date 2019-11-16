@@ -11,7 +11,7 @@ let pointsF = [];
 let t = 0;
 let bezierAccuracy = 1000;
 let finalPoint;
-let colors = ["blue","magenta", "green"];
+let allColors = ["blue","magenta", "green"];
 let colorsIndex = 0;
 
 pointsN.push(new Point(100,500));
@@ -20,6 +20,15 @@ pointsN.push(new Point(900,600));
 pointsN.push(new Point(1000,300));
 pointsN.push(new Point(700,100));
 pointsN.push(new Point(100,200));
+pointsN.push(new Point(100,100));
+pointsN.push(new Point(900,600));
+
+let colors = [];
+for(i=0; i<pointsN.length-2; i++){
+    colors.push(allColors[i%allColors.length]);
+    console.log(i%allColors.length);
+    console.log("sdsdsd");
+}
 
 mainLoop();
 function mainLoop(){
@@ -54,14 +63,11 @@ function recursiveCalc(t, tab){
     }
     else{
         pointsA = getPointsA(t, tab);
-        
         drawMultipleLines(pointsA, colors[colorsIndex]); //Draws the lines on the screen
-        console.log(colors[colorsIndex]);
         if(colorsIndex >= colors.length-1)
             colorsIndex = 0;
         else
             colorsIndex++;
-        
         //recursive call
         recursiveCalc(t, pointsA);
     }
