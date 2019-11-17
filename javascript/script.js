@@ -11,6 +11,7 @@ let pointsF = [];
 let t = 0;
 let bezierAccuracy = 1000;
 let finalPoint;
+let mouse = new Point(0, 0);
 
 pointsN.push(new Point(100,500));
 pointsN.push(new Point(400,200));
@@ -32,6 +33,13 @@ for(i=0; i<pointsN.length; i++){
 mainLoop();
 function mainLoop(){
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Clear the canvas
+
+    for(i=0; i<pointsN.length; i++){
+        if(pointsN[i].isDragging){
+            pointsN[i].x = mouse.x; 
+            pointsN[i].y = mouse.y;
+        }
+    }
 
     for(i=1; i<pointsN.length; i++){
         drawLine(pointsN[i-1], pointsN[i], "black"); //Draw stationary lines
@@ -130,14 +138,24 @@ function Point(x, y) {
 function intersectsCircle(point, circle, r) {
     return Math.sqrt((point.x-circle.x) ** 2 + (point.y - circle.y) ** 2) <= r;
 }
-  
-canvas.addEventListener("click", function(event) {
-    let canvasProperties = canvas.getBoundingClientRect();
-    let mousePoint = new Point(event.clientX-canvasProperties.left, event.clientY-canvasProperties.top);
+
+canvas.addEventListener("mouseup", function(event) {
     for(i=0; i<pointsN.length; i++){
-        if(intersectsCircle(mousePoint, pointsN[i], 12)) {
+        pointsN[i].isDragging = false;
+    }
+});
+
+canvas.addEventListener("mousedown", function(event) {
+    for(i=0; i<pointsN.length; i++){
+        if(intersectsCircle(mouse, pointsN[i], 20)) {
             //canvas.style.cursor = "all-scroll";
-            console.log("clicked");
+            pointsN[i].isDragging = true;
         }
-    };
-  });
+    }
+});
+
+canvas.addEventListener("mousemove", function(event){
+    let canvasProperties = canvas.getBoundingClientRect();
+    mouse.x = event.clientX - canvasProperties.left;
+    mouse.y = event.clientY-canvasProperties.top;
+});
