@@ -14,6 +14,8 @@ let bezierAccuracy = 1000;
 let finalPoint;
 let mouse = new Point(0, 0);
 
+let showLines = document.getElementById("showLines");
+
 pointsN.push(new Point(100,500));
 pointsN.push(new Point(400,200));
 pointsN.push(new Point(900,600));
@@ -80,11 +82,13 @@ function calcFinalPoint(t, tab){ //recursive function to calculate final point
     }
     else{
         pointsA = getPointsA(t, tab);
-        drawMultipleLines(pointsA, colors[colorsIndex]); //Draws the lines on the screen
-        if(colorsIndex >= colors.length-1)
-            colorsIndex = 0;
-        else
-            colorsIndex++;
+        if(showLines.checked) {
+            drawMultipleLines(pointsA, colors[colorsIndex]); //Draws the lines on the screen
+            if(colorsIndex >= colors.length-1)
+                colorsIndex = 0;
+            else
+                colorsIndex++;
+        }
         //recursive call
         calcFinalPoint(t, pointsA);
     }
