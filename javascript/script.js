@@ -31,6 +31,9 @@ for(i=0; i<pointsN.length; i++){
         colors.push(allColors[i%allColors.length]);
     }
 }
+for(i=0; i<pointsN.length; i++){
+    pointsN.isDragging = false;
+}
 
 mainLoop();
 function mainLoop(){
