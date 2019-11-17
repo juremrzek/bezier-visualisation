@@ -15,6 +15,11 @@ let finalPoint;
 let mouse = new Point(0, 0);
 
 let showLines = document.getElementById("showLines");
+let sliderX = document.getElementById("sliderX");
+let sliderY = document.getElementById("sliderY");
+let xPos = document.getElementById("xPos");
+let yPos = document.getElementById("yPos");
+let addPointButton = document.getElementById("addPointButton");
 
 pointsN.push(new Point(100,500));
 pointsN.push(new Point(400,200));
@@ -22,7 +27,6 @@ pointsN.push(new Point(900,600));
 pointsN.push(new Point(1400,300));
 pointsN.push(new Point(700,100));
 pointsN.push(new Point(100,200));
-pointsN.push(new Point(150,100));
 
 let allColors = ["blue","magenta", "green"];
 let colorsIndex = 0;
@@ -41,9 +45,12 @@ mainLoop();
 function mainLoop(){
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Clear the canvas
 
+    xPos.innerHTML = "X: "+sliderX.value;
+    yPos.innerHTML = "Y: "+sliderY.value;
+
     for(i=1; i<pointsN.length; i++){
         drawLine(pointsN[i-1], pointsN[i], "black"); //Draw stationary lines
-        drawCircle(pointsN[i-1].x, pointsN[i-1].y, "rgb(56,56,56)", 12);
+        drawCircle(pointsN[i-1].x, pointsN[i-1].y, "black", 12);
     }
     drawCircle(pointsN[pointsN.length-1].x, pointsN[pointsN.length-1].y, "black", 12);
     
@@ -147,13 +154,13 @@ function intersectsCircle(point, circle, r) {
     return Math.sqrt((point.x-circle.x) ** 2 + (point.y - circle.y) ** 2) <= r;
 }
 
-canvas.addEventListener("mouseup", function(event) {
+canvas.addEventListener("mouseup", function() {
     for(i=0; i<pointsN.length; i++){
         pointsN[i].isDragging = false;
     }
 });
 
-canvas.addEventListener("mousedown", function(event) {
+canvas.addEventListener("mousedown", function() {
     for(i=0; i<pointsN.length; i++){
         if(intersectsCircle(mouse, pointsN[i], 20)) {
             //canvas.style.cursor = "all-scroll";
@@ -171,8 +178,12 @@ canvasDiv.addEventListener("mousemove", function(event){
             pointsN[i].isDragging = false;
         }
     }
-    console.log(mouse.x + "y: "+mouse.y);
 });
+
+addPointButton.addEventListener("click", function(){
+    pointsN.push(new Point(150,100));
+});
+
 
 //Make it so when you change position of a point, the whole bezier redraws
 function calculateBezierAgain(t){
