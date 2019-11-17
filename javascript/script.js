@@ -55,12 +55,10 @@ function mainLoop(){
         if(pointsN[i].isDragging){
             pointsN[i].x = mouse.x; 
             pointsN[i].y = mouse.y;
-            if(t>=0 && t<=1){
-                calculateBezierAgain(t);
-            }
         }
     }
-
+    calculateBezierAgain(t);
+    
     //increment t
     if(t<1){
         t+=1/bezierAccuracy;
