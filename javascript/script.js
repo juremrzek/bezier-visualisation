@@ -24,6 +24,7 @@ pointsN.push(new Point(150,100));
 let allColors = ["blue","magenta", "green"];
 let colorsIndex = 0;
 let colors = [];
+let tempFinalPoint = new Point(0, 0);
 for(i=0; i<pointsN.length; i++){
     if(i<pointsN.length-2){
         colors.push(allColors[i%allColors.length]);
@@ -34,23 +35,26 @@ mainLoop();
 function mainLoop(){
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Clear the canvas
 
-    for(i=0; i<pointsN.length; i++){
-        if(pointsN[i].isDragging){
-            pointsN[i].x = mouse.x; 
-            pointsN[i].y = mouse.y;
-        }
-    }
-
     for(i=1; i<pointsN.length; i++){
         drawLine(pointsN[i-1], pointsN[i], "black"); //Draw stationary lines
         drawCircle(pointsN[i-1].x, pointsN[i-1].y, "rgb(56,56,56)", 12);
     }
     drawCircle(pointsN[pointsN.length-1].x, pointsN[pointsN.length-1].y, "black", 12);
-    recursiveCalc(t, pointsN);
     
+    calcFinalPoint(t, pointsN); //calculates point that  draws the bezier
     pointsF.push(finalPoint);
     for(i=1; i<pointsF.length; i++){
         drawLine(pointsF[i-1], pointsF[i], "red"); //Draw the bezier curve
+    }
+
+    for(i=0; i<pointsN.length; i++){
+        if(pointsN[i].isDragging){
+            pointsN[i].x = mouse.x; 
+            pointsN[i].y = mouse.y;
+            if(t!=0 && t!=1){
+                calculateBezierAgain(t);
+            }
+        }
     }
 
     //increment t
@@ -62,10 +66,11 @@ function mainLoop(){
         t=0;
         pointsF = [];
     }
+
     window.requestAnimationFrame(mainLoop);
 }
 
-function recursiveCalc(t, tab){ //recursive function to calculate all 
+function calcFinalPoint(t, tab){ //recursive function to calculate final point
     if(tab.length<=2){
         finalPoint = getPointsA(t, tab)[0];
         drawCircle(finalPoint.x, finalPoint.y, "red", 5);
@@ -79,7 +84,7 @@ function recursiveCalc(t, tab){ //recursive function to calculate all
         else
             colorsIndex++;
         //recursive call
-        recursiveCalc(t, pointsA);
+        calcFinalPoint(t, pointsA);
     }
 }
 
@@ -103,13 +108,10 @@ function drawCircle(x, y, color, r){
 }
 
 function getPointsA(t, tab){ //finds a midpoint for every line between points in an array
-    points = [];
-    for(i=0; i<tab.length; i++){
-        if(i>0){
-            //Calculate midpoint between stationary points and put it into array
-            let currPoint = calculateMidPoint(t, tab[i-1], tab[i]);
-            points.push(currPoint);
-        }
+    let points = [];
+    for(i=1; i<tab.length; i++){
+        //Calculate midpoint between stationary points and put it into array
+        points.push(calculateMidPoint(t, tab[i-1], tab[i]));
     }
     return points;
 }
@@ -159,3 +161,29 @@ canvas.addEventListener("mousemove", function(event){
     mouse.x = event.clientX - canvasProperties.left;
     mouse.y = event.clientY-canvasProperties.top;
 });
+
+//Make it so when you change position of a point, the whole bezier redraws
+function calculateBezierAgain(t){
+    let tempT = 0;
+    pointsF = [];
+    while(tempT<t){
+        calcTempFinalPoint(tempT, pointsN);
+        pointsF.push(tempFinalPoint);
+        tempT +=1/bezierAccuracy;
+        tempT = Math.round(tempT*bezierAccuracy)/bezierAccuracy;
+    }
+    for(i=1; i<pointsF.length; i++){
+        drawLine(pointsF[i-1], pointsF[i], "red"); //Draw the bezier curve
+    }
+}
+function calcTempFinalPoint(t, tab){ //recursive function to calculate final point
+    if(tab.length<=2){
+        tempFinalPoint = getPointsA(t, tab)[0];
+        return;
+    }
+    else{
+        let tempPointsA = getPointsA(t, tab);
+        //recursive call
+        calcTempFinalPoint(t, tempPointsA);
+    }
+}
