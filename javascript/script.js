@@ -1,5 +1,6 @@
 //Declaration of letiables
 const canvas = document.getElementById("canvas");
+const canvasDiv = document.getElementById("canvasDiv");
 canvas.height = 800;
 canvas.width = 1500;
 const ctx = canvas.getContext("2d");
@@ -51,7 +52,7 @@ function mainLoop(){
         if(pointsN[i].isDragging){
             pointsN[i].x = mouse.x; 
             pointsN[i].y = mouse.y;
-            if(t!=0 && t!=1){
+            if(t>=0 && t<=1){
                 calculateBezierAgain(t);
             }
         }
@@ -156,10 +157,16 @@ canvas.addEventListener("mousedown", function(event) {
     }
 });
 
-canvas.addEventListener("mousemove", function(event){
+canvasDiv.addEventListener("mousemove", function(event){
     let canvasProperties = canvas.getBoundingClientRect();
     mouse.x = event.clientX - canvasProperties.left;
     mouse.y = event.clientY-canvasProperties.top;
+    if(mouse.x <= 0 || mouse.y <= 0 || mouse.x >= canvas.width || mouse.y >= canvas.height){
+        for(i=0; i<pointsN.length; i++){
+            pointsN[i].isDragging = false;
+        }
+    }
+    console.log(mouse.x + "y: "+mouse.y);
 });
 
 //Make it so when you change position of a point, the whole bezier redraws

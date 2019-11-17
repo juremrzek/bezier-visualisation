@@ -5,6 +5,13 @@
 #canvas{
     border: 2px solid black;
     display:inline;
-    margin: 20px;
-    background: #fed8b1;
+    margin: 50px;
+    background: white;
+}
+#canvasDiv{
+    border: 2px solid black;
+    margin-left: 100px;
+    margin-top: 10px;
+    width: 1600px;
+    background: black;
 }
