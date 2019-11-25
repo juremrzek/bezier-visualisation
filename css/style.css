@@ -1,54 +1,62 @@
 *{
-    margin: 0px;
-    padding: 0px;
+    margin:0;
+    padding: 0;
 }
 #canvas{
-    border: 2px solid black;
-    margin: 50px;
-    background: white;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width:1200px;
+    height:800px;
+    float: left;
+    background: #274046;
 }
 #canvasDiv{
-    float:left;
     border: 2px solid black;
-    margin-left: 20px;
-    margin-top: 10px;
-    width: 1600px;
-    height: 900px;
-    background: black;
+    width: 100%;
+    display:flex;
+    justify-content:space-evenly;
+    padding: 50px;
+    background: #0E272D;
+
 }
 #optionsDiv{
-    float:left;
-    width: 230px;
-    height: 900px;
-    margin-left: 20px;
-    margin-top: 10px;
-    border: 2px solid black;
+    position:relative;
+    /*width: 230px;
+    border: 2px solid white;*/
+    border-radius: 12px;
+    background: #274046;
+    color: #ecf0f1;
+    display: flex;
+    justify-content:start;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px 0 20px;
 }
 #showLines{
     transform: scale(1.5);
-    margin-left: 10px;
-    margin-bottom: 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 .text{
     font-size: 20px;
     display: inline-block;
-    margin-left: 5px;
+    
 }
 .slider{
     display:block;
     width: 150px;
-    margin:auto;
-    margin-bottom: 5px;
+    
+    
 }
 .textMiddle{
     display:block;
     text-align:center;
     width: 150px;
-    margin:auto;
+    
 }
 #addPointButton{
     display:block;
     width:100px;
     height:30px;
-    margin:auto;
+    margin: 5px;
 }
