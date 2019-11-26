@@ -5,12 +5,12 @@ canvas.height = 800;
 canvas.width = 1200;
 const ctx = canvas.getContext("2d");
 ctx.lineWidth = 3;
-//-----------------------------
+
 let pointsN = [];
 let pointsA = [];
 let pointsF = [];
 let t = 0;
-let bezierAccuracy = 1000;
+let bezierAccuracy = 500;
 let finalPoint;
 let mouse = new Point(0, 0);
 let finalLineWidth = 4;
@@ -23,16 +23,22 @@ const sliderX = document.getElementById("sliderX");
 const sliderY = document.getElementById("sliderY");
 let xPos = document.getElementById("xPos");
 let yPos = document.getElementById("yPos");
-let addPointButton = document.getElementById("addPointButton");
+const addPointButton = document.getElementById("addPointButton");
+const pointsDiv = document.getElementById("pointsDiv");
 let tempFinalPoint = new Point(0, 0);
+let pointsDivArr = [];
 
-sliderX.value = Math.random()*canvas.width;
+sliderX.value = Math.random()*canvas.width; //When we first enter the page, the sliders will be set to random values
 sliderY.value = Math.random()*canvas.height;
 
 for(let i=0; i<5; i+=1){
-    let tempPoint = new Point(Math.random()*(canvas.width-20)+20, Math.random()*(canvas.height-20)+20);
-    pointsN.push(tempPoint)
+    let tempPoint = new Point(Math.floor(Math.random()*(canvas.width-20)+20), Math.floor(Math.random()*(canvas.height-20)+20));
+    pointsN.push(tempPoint);
 }
+pointsN.forEach((element, i) => {
+    displayNewPoint(element[i]);
+})
+
 
 const allColors = ["#727a17", "#ffc500","#FF6347"];
 //const allColors = ["#2ecc71", "#e67e22","#9b59b6"];
@@ -47,29 +53,30 @@ for(let i=0; i<pointsN.length; i++){
     pointsN.isDragging = false;
 }
 
-mainLoop();
+mainLoop();//-------------------------------------------------------------------------------------------------------------------------
 function mainLoop(){
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Clear the canvas
 
     xPos.innerHTML = "X: "+sliderX.value; //Change the html text on sliders
     yPos.innerHTML = "Y: "+sliderY.value;
 
-    for(i=1; i<pointsN.length; i++){
+    for(let i=1; i<pointsN.length; i++){
         drawLine(pointsN[i-1], pointsN[i], "black", staticLineWidth); //Draw stationary lines
-        drawCircle(pointsN[i-1].x, pointsN[i-1].y, "black", "#ecf0f1", 12);
+        drawCircle(pointsN[i-1].x, pointsN[i-1].y, "black", "#CFD8DC", 12);
     }
-    drawCircle(pointsN[pointsN.length-1].x, pointsN[pointsN.length-1].y, "black", "#ecf0f1", 12);
+    drawCircle(pointsN[pointsN.length-1].x, pointsN[pointsN.length-1].y, "black", "#CFD8DC", 12);
     
     calcFinalPoint(t, pointsN); //calculates point that  draws the bezier
     pointsF.push(finalPoint);
-    for(i=1; i<pointsF.length; i++){
+    for(let i=1; i<pointsF.length; i++){
         drawLine(pointsF[i-1], pointsF[i], "red", finalLineWidth); //Draw the bezier curve
     }
 
-    for(i=0; i<pointsN.length; i++){
+    for(let i=0; i<pointsN.length; i++){
         if(pointsN[i].isDragging){
             pointsN[i].x = mouse.x; 
             pointsN[i].y = mouse.y;
+            pointsDivArr[i].children[0].innerHTML = pointsDivArr[i].children[0].innerHTML.charAt(0) + coordinatesToString(pointsN[i]);
         }
     }
     calculateBezierAgain(t);
@@ -86,7 +93,7 @@ function mainLoop(){
     setTimeout(function() {
         window.requestAnimationFrame(mainLoop);
       }, 1000 / 60);
-}
+}//--------------------------------------------------------------------------------------------------------------------------------------
 
 function calcFinalPoint(t, tab){ //recursive function to calculate final point
     if(tab.length<=2){
@@ -109,7 +116,7 @@ function calcFinalPoint(t, tab){ //recursive function to calculate final point
 }
 
 function drawMultipleLines(points, color, lineWidth){
-    for(i=1; i<points.length; i++){
+    for(let i=1; i<points.length; i++){
         drawLine(points[i-1], points[i], color, lineWidth); //Draw moving lines
         drawCircle(points[i].x, points[i].y, color, color, 3); //Draw the points
         if(i==1){
@@ -130,7 +137,7 @@ function drawCircle(x, y, colorStroke, colorFill, r){
 
 function getPointsA(t, tab){ //finds a midpoint for every line between points in an array
     let points = [];
-    for(i=1; i<tab.length; i++){
+    for(let i=1; i<tab.length; i++){
         //Calculate midpoint between stationary points and put it into array
         points.push(calculateMidPoint(t, tab[i-1], tab[i]));
     }
@@ -164,7 +171,7 @@ function intersectsCircle(point, circle, r) {
 }
 
 canvas.addEventListener("mouseup", function() {
-    for(i=0; i<pointsN.length; i++){
+    for(let i=0; i<pointsN.length; i++){
         pointsN[i].isDragging = false;
     }
 });
@@ -180,7 +187,7 @@ canvasDiv.addEventListener("mousemove", function(event){
     mouse.x = event.clientX - canvasProperties.left;
     mouse.y = event.clientY-canvasProperties.top;
     if(mouse.x <= 0 || mouse.y <= 0 || mouse.x >= canvas.width || mouse.y >= canvas.height){
-        for(i=0; i<pointsN.length; i++){
+        for(let i=0; i<pointsN.length; i++){
             pointsN[i].isDragging = false;
         }
     }
@@ -189,9 +196,10 @@ canvasDiv.addEventListener("mousemove", function(event){
 //Add a new point when we click the button
 addPointButton.addEventListener("click", function(){
     pointsN.push(new Point(+sliderX.value,+sliderY.value));
+    displayNewPoint();
     console.log(pointsN);
     colors = [];
-    for(i=0; i<pointsN.length; i++){
+    for(let i=0; i<pointsN.length; i++){
         if(i<pointsN.length-2){
             colors.push(allColors[i%allColors.length]);
         }
@@ -212,7 +220,7 @@ function calculateBezierAgain(t){
         tempT +=1/bezierAccuracy;
         tempT = Math.round(tempT*bezierAccuracy)/bezierAccuracy;
     }
-    for(i=1; i<pointsF.length; i++){
+    for(let i=1; i<pointsF.length; i++){
         drawLine(pointsF[i-1], pointsF[i], "red"); //Draw the bezier curve
     }
 }
@@ -226,4 +234,33 @@ function calcTempFinalPoint(t, tab){ //recursive function to calculate final poi
         //recursive call
         calcTempFinalPoint(t, tempPointsA);
     }
+}
+
+//Make it so the points are displayed in the pointsDiv
+function displayNewPoint(point){
+    let div = document.createElement("div");
+    div.className = "displayPoints";
+    let span = document.createElement("span");
+    span.className="displayPoints";
+
+    pointsDivArr.push(div);
+    div.appendChild(span);
+
+    pointsDiv.appendChild(div);
+    recalculateDisplayedPoints();
+}
+function recalculateDisplayedPoints(){
+    let char;
+    for(let i=0; i<pointsDivArr.length; i++){
+        if(i==0)
+            pointsDivArr[i].children[0].innerHTML = "A"+coordinatesToString(pointsN[i]);
+        else{
+            char = String.fromCharCode(pointsDivArr[i-1].children[0].innerHTML.charAt(0).charCodeAt(0)+1);
+            pointsDivArr[i].children[0].innerHTML = char+coordinatesToString(pointsN[i]);
+        }
+    }
+}
+
+function coordinatesToString(point){
+    return "("+Math.floor(point.x)+", "+Math.floor(point.y)+")";
 }
