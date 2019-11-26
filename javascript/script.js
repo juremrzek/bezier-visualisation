@@ -1,7 +1,7 @@
 //Declaration of letiables
 const canvas = document.getElementById("canvas");
 const canvasDiv = document.getElementById("canvasDiv");
-canvas.height = 800;
+canvas.height = 850;
 canvas.width = 1200;
 const ctx = canvas.getContext("2d");
 ctx.lineWidth = 3;
@@ -25,6 +25,7 @@ let xPos = document.getElementById("xPos");
 let yPos = document.getElementById("yPos");
 const addPointButton = document.getElementById("addPointButton");
 const pointsDiv = document.getElementById("pointsDiv");
+const tooManyPointsMessage = document.getElementById("tooManyPointsMessage");
 let tempFinalPoint = new Point(0, 0);
 let pointsDivArr = [];
 
@@ -32,7 +33,7 @@ sliderX.value = Math.random()*canvas.width; //When we first enter the page, the 
 sliderY.value = Math.random()*canvas.height;
 
 for(let i=0; i<5; i+=1){
-    let tempPoint = new Point(Math.floor(Math.random()*(canvas.width-20)+20), Math.floor(Math.random()*(canvas.height-20)+20));
+    let tempPoint = new Point(Math.floor(Math.random()*(canvas.width-20)+10), Math.floor(Math.random()*(canvas.height-20)+10));
     pointsN.push(tempPoint);
 }
 pointsN.forEach((element, i) => {
@@ -40,7 +41,7 @@ pointsN.forEach((element, i) => {
 })
 
 
-const allColors = ["#727a17", "#ffc500","#FF6347"];
+const allColors = ["#1e1f26", "#283655","#4d648d"];
 //const allColors = ["#2ecc71", "#e67e22","#9b59b6"];
 let colorsIndex = 0;
 let colors = [];
@@ -195,18 +196,25 @@ canvasDiv.addEventListener("mousemove", function(event){
 
 //Add a new point when we click the button
 addPointButton.addEventListener("click", function(){
-    pointsN.push(new Point(+sliderX.value,+sliderY.value));
-    displayNewPoint();
-    console.log(pointsN);
-    colors = [];
-    for(let i=0; i<pointsN.length; i++){
-        if(i<pointsN.length-2){
-            colors.push(allColors[i%allColors.length]);
+    if(pointsN.length<=25){
+        pointsN.push(new Point(+sliderX.value,+sliderY.value));
+        displayNewPoint();
+        console.log(pointsN);
+        colors = [];
+        for(let i=0; i<pointsN.length; i++){
+            if(i<pointsN.length-2){
+                colors.push(allColors[i%allColors.length]);
+            }
         }
+        sliderX.value = Math.random()*canvas.width;
+        sliderY.value = Math.random()*canvas.height;
+        calculateBezierAgain(t);
     }
-    sliderX.value = Math.random()*canvas.width;
-    sliderY.value = Math.random()*canvas.height;
-    calculateBezierAgain(t);
+    else{
+        tooManyPointsMessage.style.color = "#D8000C";
+        tooManyPointsMessage.style.visibility = "visible";
+    }
+    
 });
 
 
@@ -242,7 +250,6 @@ function displayNewPoint(point){
     div.className = "displayPoints";
     let span = document.createElement("span");
     span.className="displayPoints";
-
     pointsDivArr.push(div);
     div.appendChild(span);
 

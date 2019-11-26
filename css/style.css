@@ -10,37 +10,38 @@ body{
     flex-grow: 0;
     flex-shrink: 0;
     width:1200px;
-    height:800px;
+    height:850px;
     float: left;
     background: #90A4AE;
 }
 #canvasDiv{
     background: #546E7A;
     display:flex;
-    justify-content:space-evenly;
+    justify-content:center;
     padding: 50px;
 }
 #optionsDiv{
     background: #90A4AE;
     position:relative;
-    width: 200px;
-    height: 800px;
+    width: 300px;
+    height: 850px;
     border-radius: 12px;
-    /*color: #ecf0f1;*/
     display: flex;
     justify-content:start;
     flex-direction: column;
     align-items: center;
-    padding: 0 20px 0 20px;
+    margin-left:10px;
 }
 #showLines{
     transform: scale(1.7);
     margin: 5px 10px 10px 5px;
 }
 .text{
-    font-size: 20px;
-    display: inline-block;
-    
+    font-size: 25px;
+    display: block;
+    padding-left:12px;
+    margin-top:5px;
+    margin-bottom:5px;
 }
 .slider{
     display:block;
@@ -51,20 +52,27 @@ body{
     text-align:center;
     width: 150px;
 }
+#xPos, #yPos{
+    font-size: 20px;
+}
 #addPointButton{
     display:block;
-    width:100px;
-    height:30px;
-    margin: 5px;
+    width:150px;
+    height:50px;
+    margin-top: 5px;
+    font-size: 18px;
+    background: #CFD8DC;
 }
-#optionsDiv div{
+#tooManyPointsMessage{
+    visibility:hidden;
+}
+#optionsDiv > div{
     background: #B0BEC5;
     width:100%;
     display: flex;
     justify-content:start;
     flex-direction: column;
     align-items: center;
-    padding: 0 20px 0 20px;
 }
 h1{
     margin: 20px;
@@ -75,10 +83,16 @@ div.displayPoints{
     font-size: 30px;
     border-bottom: 2px solid #546E7A;
     background: #B0BEC5;
+    
+    display:flex;
+    justify-content:space-between;
+    flex-direction: row;
+    align-items: top;
 }
 span.displayPoints{
     height: 50px;
     font-size: 30px;
+    padding-left:10px;
 }
 #pointsDiv{
     overflow-y: auto;
