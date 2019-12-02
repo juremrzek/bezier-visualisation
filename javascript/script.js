@@ -2,7 +2,7 @@
 const canvas = document.getElementById("canvas");
 const canvasDiv = document.getElementById("canvasDiv");
 canvas.height = 850;
-canvas.width = 1200;
+canvas.width = 1300;
 const ctx = canvas.getContext("2d");
 ctx.lineWidth = 3;
 
@@ -13,10 +13,10 @@ let t = 0;
 let bezierAccuracy = 500;
 let finalPoint;
 let mouse = new Point(0, 0);
-let finalLineWidth = 4;
-let midLineWidth = 2;
-let staticLineWidth = 5;
-let circleOutlineWidth = 8;
+const finalLineWidth = 4;
+const midLineWidth = 2;
+const staticLineWidth = 5;
+const circleOutlineWidth = 8;
 
 const showLines = document.getElementById("showLines");
 const sliderX = document.getElementById("sliderX");
@@ -24,7 +24,7 @@ const sliderY = document.getElementById("sliderY");
 let xPos = document.getElementById("xPos");
 let yPos = document.getElementById("yPos");
 const addPointButton = document.getElementById("addPointButton");
-const pointsDiv = document.getElementById("pointsDiv");
+const pointsDiv = document.getElementById("pointsDiv"); //This element displays all of the points' coordinates
 const tooManyPointsMessage = document.getElementById("tooManyPointsMessage");
 let tempFinalPoint = new Point(0, 0);
 let pointsDivArr = [];
@@ -41,21 +41,16 @@ pointsN.forEach((element, i) => {
 })
 
 
-const allColors = ["#1e1f26", "#283655","#4d648d"];
-//const allColors = ["#2ecc71", "#e67e22","#9b59b6"];
+const colors = ["#1e1f26", "#283655","#4d648d"];
 let colorsIndex = 0;
-let colors = [];
-for(let i=0; i<pointsN.length; i++){
-    if(i<pointsN.length-2){
-        colors.push(allColors[i%allColors.length]);
-    }
-}
+
 for(let i=0; i<pointsN.length; i++){
     pointsN.isDragging = false;
 }
 
 mainLoop();//-------------------------------------------------------------------------------------------------------------------------
 function mainLoop(){
+    colorsIndex = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Clear the canvas
 
     xPos.innerHTML = "X: "+sliderX.value; //Change the html text on sliders
@@ -66,7 +61,6 @@ function mainLoop(){
         drawCircle(pointsN[i-1].x, pointsN[i-1].y, "black", "#CFD8DC", 12);
     }
     drawCircle(pointsN[pointsN.length-1].x, pointsN[pointsN.length-1].y, "black", "#CFD8DC", 12);
-    
     calcFinalPoint(t, pointsN); //calculates point that  draws the bezier
     pointsF.push(finalPoint);
     for(let i=1; i<pointsF.length; i++){
@@ -77,10 +71,28 @@ function mainLoop(){
         if(pointsN[i].isDragging){
             pointsN[i].x = mouse.x; 
             pointsN[i].y = mouse.y;
-            pointsDivArr[i].children[0].innerHTML = pointsDivArr[i].children[0].innerHTML.charAt(0) + coordinatesToString(pointsN[i]);
+            pointsDivArr[i].getElement().children[0].innerHTML = pointsDivArr[i].getElement().children[0].innerHTML.charAt(0) + coordinatesToString(pointsN[i]);
         }
     }
     calculateBezierAgain(t);
+
+    //set cursor
+    let anyPointIsHovered = false;
+    let anyPointIsDragging = false;
+    for(let i=0; i<pointsN.length; i++){
+        if(intersectsCircle(mouse, pointsN[i], 20))
+            anyPointIsHovered = true;
+        if(pointsN[i].isDragging){
+            anyPointIsDragging = true;
+        }
+    }
+    if(anyPointIsHovered)
+        canvas.style.cursor = "grab";
+    else
+        canvas.style.cursor = "default";
+    if(anyPointIsDragging)
+       canvas.style.cursor = "grabbing";
+    //---
     
     //increment t
     if(t<1){
@@ -175,12 +187,15 @@ canvas.addEventListener("mouseup", function() {
     for(let i=0; i<pointsN.length; i++){
         pointsN[i].isDragging = false;
     }
+    canvas.style.cursor = "grab";
 });
 
 canvas.addEventListener("mousedown", function() {
     const intersecting = pointsN.filter(point => intersectsCircle(mouse, point, 20));
-    if(intersecting.length > 0)
+    if(intersecting.length > 0) {
         intersecting[intersecting.length -1].isDragging = true;
+        canvas.style.cursor = "grabbing";
+    }
 });
 
 canvasDiv.addEventListener("mousemove", function(event){
@@ -199,7 +214,6 @@ addPointButton.addEventListener("click", function(){
     if(pointsN.length<=25){
         pointsN.push(new Point(+sliderX.value,+sliderY.value));
         displayNewPoint();
-        console.log(pointsN);
         colors = [];
         for(let i=0; i<pointsN.length; i++){
             if(i<pointsN.length-2){
@@ -209,6 +223,7 @@ addPointButton.addEventListener("click", function(){
         sliderX.value = Math.random()*canvas.width;
         sliderY.value = Math.random()*canvas.height;
         calculateBezierAgain(t);
+        tooManyPointsMessage.style.visibility = "hidden";
     }
     else{
         tooManyPointsMessage.style.color = "#D8000C";
@@ -249,21 +264,34 @@ function displayNewPoint(point){
     let div = document.createElement("div");
     div.className = "displayPoints";
     let span = document.createElement("span");
-    span.className="displayPoints";
-    pointsDivArr.push(div);
-    div.appendChild(span);
+    span.className="displayCoordinates";
+    div.append(span);
 
-    pointsDiv.appendChild(div);
+    let deleteButton = document.createElement("span");
+    deleteButton.innerHTML = "&times";
+    deleteButton.className = "deleteButton";
+    div.append(deleteButton);
+    
+    const pointDiv = new PointDiv(div, pointsDiv);
+    pointsDivArr.push(pointDiv);
+    pointsDiv.appendChild(pointDiv.getElement());
     recalculateDisplayedPoints();
+    deleteButton.addEventListener("click", () => {
+        pointDiv.delete();
+        pointsN = pointsN.filter(p => p!=pointsN[pointsDivArr.indexOf(pointDiv)]);
+        pointsDivArr = pointsDivArr.filter(p => p != pointDiv);
+        tooManyPointsMessage.style.visibility = "hidden";
+    });
 }
 function recalculateDisplayedPoints(){
     let char;
     for(let i=0; i<pointsDivArr.length; i++){
-        if(i==0)
-            pointsDivArr[i].children[0].innerHTML = "A"+coordinatesToString(pointsN[i]);
+        if(i==0){
+            pointsDivArr[i].getElement().children[0].innerHTML = "A"+coordinatesToString(pointsN[i]);
+        }
         else{
-            char = String.fromCharCode(pointsDivArr[i-1].children[0].innerHTML.charAt(0).charCodeAt(0)+1);
-            pointsDivArr[i].children[0].innerHTML = char+coordinatesToString(pointsN[i]);
+            char = String.fromCharCode(pointsDivArr[i-1].getElement().children[0].innerHTML.charAt(0).charCodeAt(0)+1);
+            pointsDivArr[i].getElement().children[0].innerHTML = char+coordinatesToString(pointsN[i]);
         }
     }
 }
