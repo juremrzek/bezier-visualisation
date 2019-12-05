@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>Bezier</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -12,19 +12,19 @@
         <canvas id="canvas">
         </canvas>
         <div id="optionsDiv">
-            <h1>OPTIONS</h1>
+            <h1>Možnosti</h1>
             <div>
-                <span class="text">Show helping lines <input type="checkbox" id="showLines" checked /></span>
+                <span class="text">Prikaži pomožne črte <input type="checkbox" id="showLines" checked /></span>
             </div>
-            <div><span class="text">Position of the new point:</span>
+            <div><span class="text">Pozicija nove točke:</span>
                 <span class="textMiddle" id="xPos">X: </span>
                 <input type="range" min="20" max="1280" value="50" class="slider" id="sliderX"/>
                 <span class="textMiddle" id="yPos">Y: </span>
                 <input type="range" min="20" max="830" value="50" class="slider" id="sliderY"/>
-                <button id="addPointButton">Add point</button>
+                <button id="addPointButton">Dodaj točko</button>
                 <span id="tooManyPointsMessage">Na grafu je lahko največ 25 točk</span>
             </div>
-            <h1>Points:</h1>
+            <h1>Točke:</h1>
             <div id="pointsDiv">
                 
             </div>

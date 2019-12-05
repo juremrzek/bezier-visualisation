@@ -32,16 +32,16 @@ let pointsDivArr = [];
 sliderX.value = Math.random()*canvas.width; //When we first enter the page, the sliders will be set to random values
 sliderY.value = Math.random()*canvas.height;
 
-for(let i=0; i<5; i+=1){
-    let tempPoint = new Point(Math.floor(Math.random()*(canvas.width-20)+10), Math.floor(Math.random()*(canvas.height-20)+10));
-    pointsN.push(tempPoint);
-}
+pointsN.push(new Point(370, 420));
+pointsN.push(new Point(160, 800));
+pointsN.push(new Point(1100, 270));
+
 pointsN.forEach((element, i) => {
     displayNewPoint(element[i]);
 })
 
 
-const colors = ["#1e1f26", "#283655","#4d648d"];
+const colors = ["#1e1f26", "#283655","#4d648d"]; //colors to draw helping lines with
 let colorsIndex = 0;
 
 for(let i=0; i<pointsN.length; i++){
@@ -214,14 +214,9 @@ addPointButton.addEventListener("click", function(){
     if(pointsN.length<=25){
         pointsN.push(new Point(+sliderX.value,+sliderY.value));
         displayNewPoint();
-        colors = [];
-        for(let i=0; i<pointsN.length; i++){
-            if(i<pointsN.length-2){
-                colors.push(allColors[i%allColors.length]);
-            }
-        }
-        sliderX.value = Math.random()*canvas.width;
-        sliderY.value = Math.random()*canvas.height;
+        sliderX.value = Math.random()*canvas.width+20;
+        sliderY.value = Math.random()*canvas.height+20;
+        console.log();
         calculateBezierAgain(t);
         tooManyPointsMessage.style.visibility = "hidden";
     }
@@ -277,10 +272,16 @@ function displayNewPoint(point){
     pointsDiv.appendChild(pointDiv.getElement());
     recalculateDisplayedPoints();
     deleteButton.addEventListener("click", () => {
-        pointDiv.delete();
-        pointsN = pointsN.filter(p => p!=pointsN[pointsDivArr.indexOf(pointDiv)]);
-        pointsDivArr = pointsDivArr.filter(p => p != pointDiv);
-        tooManyPointsMessage.style.visibility = "hidden";
+        if(pointsN.length>2){ //We need to have at least 2 points at once
+            pointDiv.delete();
+            pointsN = pointsN.filter(p => p!=pointsN[pointsDivArr.indexOf(pointDiv)]);
+            pointsDivArr = pointsDivArr.filter(p => p != pointDiv);
+            tooManyPointsMessage.style.visibility = "hidden";
+            recalculateDisplayedPoints();
+        }
+        else{
+            console.log("to lil point nibba");
+        }
     });
 }
 function recalculateDisplayedPoints(){

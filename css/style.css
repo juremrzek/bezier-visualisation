@@ -36,7 +36,8 @@ body{
     margin-left:10px;
 }
 #showLines{
-    transform: scale(1.7);
+    transform: scale(1.5);
+    padding: 10px;
     margin: 5px 10px 10px 5px;
 }
 .text{
