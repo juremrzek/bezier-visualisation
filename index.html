@@ -4,7 +4,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>Bezier</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <title>Simulacija Bezierjeve krivulje</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -29,6 +30,18 @@
                 
             </div>
         </div>
+    </div>
+    <div id="popup"> <!--pop that appears at the begining-->
+        <h1 id="popupNaslov">Simulacija Bezierjeve krivulje</h1>
+        <p class="popupText">Ta program nariše Bezierjevo krivuljo glede na nedoločeno število podanih točk.
+            Deluje tako, da ima 3 različne tipe točk - točke N, ki jih lahko premika uporabnik, 
+            pomožne točke, ki potujejo po daljicah med točkami N ali pa po daljicah med drugimi pomožnimi točkami
+            in pa končne točke, ki tvorijo bezierjevo krivuljo, ko so povezane med sabo.</p>
+        <p class="popupText">Točke na zaslonu lahko premikaš z miško. Spodaj desno so prikazane koordinate vse točk, posamezno točko lahko izbrišeš s klikom na <span style="font-family:Tahoma;">&times</span>.</p>
+        <p class="popupText">Zgoraj desno pa si lahko izbereš, če hočeš da se rišejo pomožne točke in črte ali ne. Tam lahko tudi dodajaš novo točko - 
+            na drsnikih izberi x in y koordinato tvoje nove točke ter klikni na gumb "Dodaj točko".
+        </p>
+        <button id="popupButton">V redu</button>
     </div>
         <script src="javascript/PointDiv.js"></script>
         <script src="javascript/script.js"></script>

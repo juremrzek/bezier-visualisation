@@ -1,10 +1,11 @@
-//Declaration of letiables
+//Declaration of variables
 const canvas = document.getElementById("canvas");
 const canvasDiv = document.getElementById("canvasDiv");
 canvas.height = 850;
 canvas.width = 1300;
 const ctx = canvas.getContext("2d");
 ctx.lineWidth = 3;
+const popupButton = document.getElementById("popupButton");
 
 let pointsN = [];
 let pointsA = [];
@@ -21,16 +22,16 @@ const circleOutlineWidth = 8;
 const showLines = document.getElementById("showLines");
 const sliderX = document.getElementById("sliderX");
 const sliderY = document.getElementById("sliderY");
-let xPos = document.getElementById("xPos");
-let yPos = document.getElementById("yPos");
+const xPos = document.getElementById("xPos");
+const yPos = document.getElementById("yPos");
 const addPointButton = document.getElementById("addPointButton");
 const pointsDiv = document.getElementById("pointsDiv"); //This element displays all of the points' coordinates
 const tooManyPointsMessage = document.getElementById("tooManyPointsMessage");
 let tempFinalPoint = new Point(0, 0);
 let pointsDivArr = [];
 
-sliderX.value = Math.random()*canvas.width; //When we first enter the page, the sliders will be set to random values
-sliderY.value = Math.random()*canvas.height;
+sliderX.value = (Math.random()*canvas.width-20)+20; //When we first enter the page, the sliders will be set to random values
+sliderY.value = (Math.random()*canvas.height-20)+20;
 
 pointsN.push(new Point(370, 420));
 pointsN.push(new Point(160, 800));
@@ -38,7 +39,7 @@ pointsN.push(new Point(1100, 270));
 
 pointsN.forEach((element, i) => {
     displayNewPoint(element[i]);
-})
+});
 
 
 const colors = ["#1e1f26", "#283655","#4d648d"]; //colors to draw helping lines with
@@ -48,7 +49,7 @@ for(let i=0; i<pointsN.length; i++){
     pointsN.isDragging = false;
 }
 
-mainLoop();//-------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------
 function mainLoop(){
     colorsIndex = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Clear the canvas
@@ -190,7 +191,7 @@ canvas.addEventListener("mouseup", function() {
     canvas.style.cursor = "grab";
 });
 
-canvas.addEventListener("mousedown", function() {
+canvas.addEventListener("mousedown", () => {
     const intersecting = pointsN.filter(point => intersectsCircle(mouse, point, 20));
     if(intersecting.length > 0) {
         intersecting[intersecting.length -1].isDragging = true;
@@ -198,7 +199,7 @@ canvas.addEventListener("mousedown", function() {
     }
 });
 
-canvasDiv.addEventListener("mousemove", function(event){
+canvasDiv.addEventListener("mousemove", (event) => {
     const canvasProperties = canvas.getBoundingClientRect();
     mouse.x = event.clientX - canvasProperties.left;
     mouse.y = event.clientY-canvasProperties.top;
@@ -210,7 +211,7 @@ canvasDiv.addEventListener("mousemove", function(event){
 });
 
 //Add a new point when we click the button
-addPointButton.addEventListener("click", function(){
+addPointButton.addEventListener("click", () => {
     if(pointsN.length<=25){
         pointsN.push(new Point(+sliderX.value,+sliderY.value));
         displayNewPoint();
@@ -225,6 +226,12 @@ addPointButton.addEventListener("click", function(){
         tooManyPointsMessage.style.visibility = "visible";
     }
     
+});
+
+popupButton.addEventListener("click", () => {
+    mainLoop();
+    document.getElementById("popup").style.display = "none";
+    canvasDiv.style.pointerEvents = "auto";
 });
 
 
@@ -279,9 +286,6 @@ function displayNewPoint(point){
             tooManyPointsMessage.style.visibility = "hidden";
             recalculateDisplayedPoints();
         }
-        else{
-            console.log("to lil point nibba");
-        }
     });
 }
 function recalculateDisplayedPoints(){
@@ -296,7 +300,6 @@ function recalculateDisplayedPoints(){
         }
     }
 }
-
 function coordinatesToString(point){
     return "("+Math.floor(point.x)+", "+Math.floor(point.y)+")";
 }
