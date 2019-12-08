@@ -5,13 +5,16 @@ canvas.height = 850;
 canvas.width = 1300;
 const ctx = canvas.getContext("2d");
 ctx.lineWidth = 3;
+const popup = document.getElementById("popup");
 const popupButton = document.getElementById("popupButton");
+const popupClose = document.getElementById("popupClose");
+let popupPos = 50;
 
 let pointsN = [];
 let pointsA = [];
 let pointsF = [];
 let t = 0;
-let bezierAccuracy = 500;
+let bezierAccuracy = 400;
 let finalPoint;
 let mouse = new Point(0, 0);
 const finalLineWidth = 4;
@@ -106,7 +109,7 @@ function mainLoop(){
     }
     setTimeout(function() {
         window.requestAnimationFrame(mainLoop);
-      }, 1000 / 60);
+    }, 1000 / 60);
 }//--------------------------------------------------------------------------------------------------------------------------------------
 
 function calcFinalPoint(t, tab){ //recursive function to calculate final point
@@ -228,10 +231,26 @@ addPointButton.addEventListener("click", () => {
     
 });
 
+function animatePopup(){
+    popupPos -= 2.5;
+    popup.style.top = popupPos+"%";
+    if(popupPos > -50){
+        setTimeout(() => {
+            window.requestAnimationFrame(animatePopup);
+        }, 1000 / 60);
+    }
+    else{
+        document.getElementById("popup").style.display = "none";
+        canvasDiv.style.pointerEvents = "auto";
+    }
+}
 popupButton.addEventListener("click", () => {
+    animatePopup();
     mainLoop();
-    document.getElementById("popup").style.display = "none";
-    canvasDiv.style.pointerEvents = "auto";
+});
+popupClose.addEventListener("click", () => {
+    animatePopup();
+    mainLoop();
 });
 
 
